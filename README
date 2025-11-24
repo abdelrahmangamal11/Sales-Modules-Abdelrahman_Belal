@@ -1,0 +1,238 @@
+# Sale Module
+
+## Overview
+
+This is a simple Sales and Invoice management system implemented in Python.  
+It supports the following:
+
+- Managing Customers
+- Managing Products
+- Creating Sale Orders and Invoices
+- Confirming and Canceling orders and invoices
+
+The system is console-based and demonstrates object-oriented programming principles such as inheritance, encapsulation, and relationships between models.
+
+## Setup Instructions
+
+### Requirements
+
+- Python 3.8+ installed
+- No external dependencies (pure Python)
+
+### Running the program
+
+```bash
+git clone <repository_url>
+cd <project_folder>
+python main.py
+Follow the on-screen menu to create customers, products, sale orders, and invoices.
+
+### Models & Their Purpose ###
+
+1. BaseModel
+File: base.py
+Purpose:
+
+Abstract base class for all models
+
+Provides auto-increment id and name field
+
+Key Properties & Methods:
+
+id → Unique identifier
+
+name → Name of the record
+
+__str__ → String representation
+
+2. Customer
+File: customer.py
+Purpose:
+
+Represents a customer
+
+Stores name, email, and phone
+
+Key Properties & Methods:
+
+email → Getter/Setter with validation
+
+phone → Getter/Setter
+
+__str__ → Nicely formatted output
+
+3. Product
+File: product.py
+Purpose:
+
+Represents a product or service
+
+Stores name, price, description, and product_type
+
+Key Properties & Methods:
+
+price → Setter ensures price > 0
+
+description → Setter for product description
+
+product_type → Can be "goods" or "services"
+
+__str__ → Displays product details
+
+4. SaleOrder & SaleOrderLine
+File: sales.py
+Purpose:
+
+SaleOrder represents a customer order
+
+SaleOrderLine represents each product line in the order
+
+Key Properties & Methods:
+
+add_line(product, quantity, unit_price) → Adds a line to the order
+
+confirm() → Confirms order and copy lines from sale order lines to  invoice
+
+cancel() → Cancels order
+
+state → Tracks "draft", "confirmed", "canceled"
+
+__str__ → Displays order and line details
+
+5. Invoice & InvoiceLine
+File: invoice.py
+Purpose:
+
+Represents an invoice generated from a sale order
+
+Tracks lines, customer info, and state
+
+Key Properties & Methods:
+
+add_line(product, quantity, unit_price) → Adds invoice line
+
+confirm() → Confirms invoice (changes state to "posted")
+
+cancel() → Cancels invoice (changes state to "canceled")
+
+state → "draft", "posted", "canceled"
+
+__str__ → Nicely formatted invoice
+
+### Workflow & Relationships ###
+
+Create Customer → Must exist before sale orders
+
+Create Product → Must exist to add to sale orders
+
+Create Sale Order → Select a customer and add products
+
+Confirm Sale Order → Optionally generates an Invoice
+
+Confirm Invoice → Marks invoice as posted
+
+Cancel Sale Order / Invoice → Change state to canceled
+
+### Detailed Entity Relationships
+
+┌─────────────┐
+│  Customer   │
+├─────────────┤
+│ id          │
+│ name        │
+│ email       │
+│ phone       │
+│             │
+│ sale_orders │─────┐
+│ invoices    │     │
+└─────────────┘     │
+                    │
+                    │ (1:N)
+                    │
+        ┌───────────▼──────────┐
+        │    SaleOrder         │
+        ├──────────────────────┤
+        │ id                   │
+        │ name                 │
+        │ customer_id (FK)     │◄───┐
+        │ state                │    │
+        │ lines[] (1:N)        │    │
+        └──────────┬───────────┘    │
+                   │                │
+                   │ (1:N)          │
+                   │                │
+        ┌──────────▼───────────┐    │
+        │   SaleOrderLine      │    │
+        ├──────────────────────┤    │
+        │ product (FK)         │    │
+        │ quantity             │    │
+        │ unit_price           │    │
+        │ sub_total            │    │
+        └──────────┬───────────┘    │
+                   │                │
+                   │ (N:1)          │
+                   │                │
+        ┌──────────▼───────────┐    │
+        │      Product         │    │
+        ├──────────────────────┤    │
+        │ id                   │    │
+        │ name                 │    │
+        │ price                │    │
+        │ description          │    │
+        │ product_type         │    │
+        └──────────────────────┘    │
+                                    │
+                    ┌───────────────┘
+                    │
+        ┌───────────▼───────────┐
+        │      Invoice          │
+        ├───────────────────────┤
+        │ id                    │
+        │ name                  │
+        │ customer_id (FK)      │
+        │ state                 │
+        │                       │
+        │ lines[] (1:N)         │
+        └───────────┬───────────┘
+                    │
+                    │ (1:N)
+                    │
+        ┌───────────▼───────────┐
+        │    InvoiceLine        │
+        ├───────────────────────┤
+        │ product (FK)          │
+        │ quantity              │
+        │ unit_price            │
+        │ sub_total             │
+        └───────────────────────┘
+
+
+### How to Use ###
+
+Run the program:
+
+python main.py
+
+Use the menu options:
+
+1 → Create Customer
+
+2 → Create Product
+
+3 → Create Sale Order
+
+4 → Confirm Sale Order
+
+5 → Cancel Sale Order
+
+6 → Create Invoice from Sale Order
+
+7 → Confirm Invoice
+
+8 → Cancel Invoice
+
+9-12 → Show lists of Customers, Products, Sale Orders, or Invoices
+
+0 → Exit
+
+```
