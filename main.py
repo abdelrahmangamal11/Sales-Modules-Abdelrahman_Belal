@@ -37,16 +37,39 @@ def create_customer():
 
 def create_product():
     name = input("Product name: ")
+    
     while True:
         try:
             price = float(input("Price: "))
             break
         except ValueError:
             print("Enter a valid number for price.")
+    
     desc = input("Description: ")
-    p = Product(name, price, desc)
-    products.append(p)
-    print(f"Created: {p}")
+
+    # Select product type
+    print("\nSelect Product Type:")
+    print("1. Goods")
+    print("2. Services")
+    
+    while True:
+        ptype = input("Enter choice (1 or 2): ")
+
+        if ptype == "1":
+            product = Product(name, price, desc)
+            product.select_goods_product_type()
+            break
+        
+        elif ptype == "2":
+            product = Product(name, price, desc)
+            product.select_services_product_type()
+            break
+        
+        else:
+            print("Invalid choice. Please enter 1 or 2.")
+
+    products.append(product)
+    print(f"Created: {product}")
 
 
 def create_sale_order():
